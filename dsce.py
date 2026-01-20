@@ -1,5 +1,6 @@
 import streamlit as st
 from groq import Groq
+from PIL import Image
 
 st.set_page_config("PragyanAI Content Generator", layout="wide")
 st.title("SUHAS K – Content Generator")
@@ -12,6 +13,16 @@ with col1:
     product = st.text_input("Product")
     audience = st.text_input("Audience")
 
+    # 📸 Image upload
+    uploaded_image = st.file_uploader(
+        "Upload Product Image",
+        type=["png", "jpg", "jpeg"]
+    )
+
+    if uploaded_image:
+        image = Image.open(uploaded_image)
+        st.image(image, caption="Uploaded Product Image", use_container_width=True)
+
     if st.button("Generate Content"):
         prompt = f"Write marketing content for {product} targeting {audience}."
         response = client.chat.completions.create(
@@ -22,7 +33,11 @@ with col1:
 
 with col2:
     if "text" in st.session_state:
-        content = st.text_area("Generated Content", st.session_state.text, height=300)
+        content = st.text_area(
+            "Generated Content",
+            st.session_state.text,
+            height=300
+        )
 
         st.download_button(
             label="⬇️ Download as TXT",
